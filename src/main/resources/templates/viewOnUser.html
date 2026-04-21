@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!-- Добавляем поддержку Thymeleaf -->
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Information</title>
+</head>
+<body>
+<h1>Данные пользователя</h1>
+
+<table border="2">
+    <thead>
+    <tr>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>возраст</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${user.name}">Имя</td>
+        <td th:text="${user.surname}">Фамилия</td>
+        <td th:text="${user.age}">возраст</td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+<form th:action="@{/login}" method="post">
+    <button type="submit">Выйти</button>
+</form>
+</body>
+</html>

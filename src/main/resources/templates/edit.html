@@ -1,0 +1,76 @@
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<!--<body>-->
+
+<!--<h2>Редактирование Юзера</h2>-->
+
+<!--<form th:object="${user}" method="post">-->
+<!--    <input type="hidden" th:field="*{id}"/>-->
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
+
+<!--    <div>-->
+<!--        <label>Имя:</label>-->
+<!--        <input type="text" th:field="*{name}"/>-->
+<!--    </div>-->
+
+<!--    <div>-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование пользователя</title>
+</head>
+<body>
+
+<h2>Редактирование пользователя</h2>
+
+<form th:action="${user.id == null} ? @{/admin/add} : @{/admin/update}"
+      th:object="${user}"
+      method="post">
+
+    <input type="hidden" th:field="*{id}"/>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <div>
+        <label>Имя:</label>
+        <input type="text" th:field="*{name}" required/>
+    </div>
+
+    <div>
+        <label>Фамилия:</label>
+        <input type="text" th:field="*{surname}" required/>
+    </div>
+
+    <div>
+        <label>Возраст:</label>
+        <input type="number" th:field="*{age}" required/>
+    </div>
+
+    <div>
+        <label>Роли:</label>
+        <select th:name="roles" multiple size="2">
+            <option th:each="role : ${allRoles}"
+                    th:value="${role.id}"
+                    th:text="${role.name}"
+                    th:selected="${user.roles.contains(role)}">
+            </option>
+        </select>
+    </div>
+    <div th:if="${user.id == null}">
+        <label>Пароль:</label>
+        <input type="password" th:field="*{password}" required/>
+    </div>
+    <button type="submit"style="color: blue;">Сохранить</button>
+    <a href="/admin">Отмена</a>
+
+</form>
+
+<!-- Отдельная форма для удаления -->
+<form th:action="@{/admin/delete/{id}(id=${user.id})}" method="post" style="margin-top: 10px;">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit" style="color: red;" onclick="return confirm('Удалить пользователя?')">Удалить</button>
+</form>
+
+</body>
+</html>
