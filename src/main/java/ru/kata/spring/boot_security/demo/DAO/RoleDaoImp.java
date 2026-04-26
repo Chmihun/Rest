@@ -1,35 +1,38 @@
-package ru.kata.spring.boot_security.demo.service;
+package ru.kata.spring.boot_security.demo.DAO;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
-@Service
-public class RoleServiceImp implements RoleService{
+@Repository
+public class RoleDaoImp implements RoleDao {
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
-    @Transactional(readOnly = true)
+
+    public RoleDaoImp(EntityManager entityManager) {this.entityManager = entityManager;}
+
+
     @Override
     public List<Role> getAllRoles() {
         return entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultList();
+
     }
-    @Transactional(readOnly = true)
+
     @Override
     public Role getRoleById(Long id) {
         return entityManager.find(Role.class, id);
     }
-    @Transactional(readOnly = true)
+
+
     @Override
     public Role findByName(String name) {
         try {
-            return entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class)
-                    .setParameter("name", name)
-                    .getSingleResult();
+            return entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class).setParameter("name", name).getSingleResult();
         } catch (Exception e) {
             return null;
         }

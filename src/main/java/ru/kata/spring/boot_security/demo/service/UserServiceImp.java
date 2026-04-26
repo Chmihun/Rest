@@ -6,94 +6,74 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.DAO.RoleDao;
+import ru.kata.spring.boot_security.demo.DAO.UserDao;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class UserServiceImp implements UserService, UserDetailsService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+//    @PersistenceContext
     private final RoleService roleService;  // добавить
     private final PasswordEncoder passwordEncoder;
+    private final RoleDao roleDao;
+    private final UserDao userDao;
 
-
-    public UserServiceImp(RoleService roleService, PasswordEncoder passwordEncoder) {
+    public UserServiceImp(RoleService roleService, PasswordEncoder passwordEncoder, RoleDao roleDao, UserDao userDao) {
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
+        this.roleDao = roleDao;
+        this.userDao = userDao;
     }
-
+    @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
-        return entityManager.createQuery("select u from User u", User.class).getResultList();
+        return userDao.getAllUsers();
     }
-
+    @Transactional
     @Override
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        entityManager.persist(user);
+        userDao.saveUser(user);
     }
-
+    @Transactional(readOnly = true)
     @Override
     public User getUserById(Long id) {
-        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.id = :id", User.class).setParameter("id", id).getSingleResult();
+        return userDao.getUserById(id);
     }
-
+    @Transactional
     @Override
     public void updateUser(User user, List<Long> roleIds) {
-        System.out.println("Updating password: " + (user.getPassword() != null));
-        User existing = getUserById(user.getId());
-        existing.setName(user.getName());
-        existing.setSurname(user.getSurname());
-        existing.setAge(user.getAge());
+        // Получаем роли по ID
+        Set<Role> roles = roleIds.stream()
+                .map(roleService::getRoleById)
+                .collect(Collectors.toSet());
+        user.setRoles(roles);
 
-        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
-            existing.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        if (roleIds != null && !roleIds.isEmpty()) {
-            existing.setRoles(roleIds.stream().map(roleService::getRoleById).collect(Collectors.toSet()));
-        }
-        entityManager.merge(existing);
-
-    }
-
-    /*
-    public void updateUser(User user) {
-        User existingUser = getUserById(user.getId());
-        // Обновляем основные поля
-        existingUser.setName(user.getName());
-        existingUser.setSurname(user.getSurname());
-        existingUser.setAge(user.getAge());
-        // Обновляем пароль ТОЛЬКО если он не пустой
-
+        // Если пароль изменился - шифруем
         if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        // Если пароль пустой - оставляем старый (ничего не делаем)
 
-        // Обновляем роли ТОЛЬКО если они переданы
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            existingUser.setRoles(user.getRoles());
-        }
-        // Если роли не переданы - оставляем старые
-        entityManager.merge(existingUser);
+        userDao.updateUser(user);
     }
-
-*/
+    @Transactional
     @Override
     public void deleteUser(Long id) {
         User user = getUserById(id);
-        entityManager.remove(user);
+        userDao.deleteUser(id);
     }
-
+    @Transactional(readOnly = true)
     @Override
     public User findByUsername(String username) {
-        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.name = :username", User.class).setParameter("username", username).getSingleResult();
+        return userDao.findByUsername(username);
     }
 
     @Override

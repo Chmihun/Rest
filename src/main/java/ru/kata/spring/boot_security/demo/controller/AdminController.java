@@ -18,14 +18,12 @@ import java.util.stream.Collectors;
 @Controller
 public class AdminController {
     private final UserService userService;
-    private final RoleService roleService;      // ДОБАВИТЬ
-    //    private final PasswordEncoder passwordEncoder; // ДОБАВИТЬ
+    private final RoleService roleService;
 
 
     public AdminController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.roleService = roleService;
-        //        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping(value = "/admin")
