@@ -29,6 +29,7 @@ public class AdminController {
     @GetMapping(value = "/admin")
     public String hello(Model model) {
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("roles",roleService.getAllRoles());
         return "firstPage";
     }
 
@@ -60,7 +61,7 @@ public class AdminController {
         newUser.setRoles(new HashSet<>());  // ← добавить
         model.addAttribute("user", newUser);
         model.addAttribute("allRoles", roleService.getAllRoles());
-        return "edit";
+        return "addNewUser";
     }
 
     @PostMapping("/admin/add")
