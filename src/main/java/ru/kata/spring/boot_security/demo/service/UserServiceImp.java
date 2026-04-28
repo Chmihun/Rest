@@ -51,18 +51,30 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void updateUser(User user, List<Long> roleIds) {
-        // Получаем роли по ID
-        Set<Role> roles = roleIds.stream()
-                .map(roleService::getRoleById)
-                .collect(Collectors.toSet());
-        user.setRoles(roles);
+        // Получаем существующего пользователя из БД
+        User existingUser = userDao.getUserById(user.getId());
 
-        // Если пароль изменился - шифруем
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Обновляем основные поля
+        existingUser.setName(user.getName());
+        existingUser.setSurname(user.getSurname());
+        existingUser.setAge(user.getAge());
+        existingUser.setEmail(user.getEmail());
+
+        // Обновляем пароль ТОЛЬКО если он был введен (не null и не пустой)
+        if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        // Если пароль не введен - оставляем старый (ничего не делаем)
+
+        // Обновляем роли
+        if (roleIds != null && !roleIds.isEmpty()) {
+            Set<Role> roles = roleIds.stream()
+                    .map(roleService::getRoleById)
+                    .collect(Collectors.toSet());
+            existingUser.setRoles(roles);
         }
 
-        userDao.updateUser(user);
+        userDao.updateUser(existingUser);
     }
     @Transactional
     @Override
