@@ -10,28 +10,25 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
     private final UserService userService;
     private final RoleService roleService;
-
+private final PasswordEncoder passwordEncoder;
 
     public AdminController(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping(value = "/admin")
     public String hello(Model model) {
         model.addAttribute("users", userService.getAllUsers());
-//        model.addAttribute("roles",roleService.getAllRoles());
         model.addAttribute("allRoles",roleService.getAllRoles());
-//        model.addAttribute("allRoles", roleService.getAllRoles());
         return "firstPage";
     }
 
@@ -45,13 +42,12 @@ public class AdminController {
 
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
-        model.addAttribute("allRoles", roleService.getAllRoles()); // ДОБАВИТЬ
+        model.addAttribute("allRoles", roleService.getAllRoles()); // Прямая передача
+
         return "edit";
     }
-
     @PostMapping("/admin/update")
     public String update(@ModelAttribute("user") User user, @RequestParam(value = "roles", required = false) List<Long> roleIds) {
-        System.out.println("Password: " + user.getPassword()); // должно быть null
         userService.updateUser(user, roleIds);
         return "redirect:/admin";
 
@@ -63,10 +59,11 @@ public class AdminController {
         newUser.setRoles(new HashSet<>());  // ← добавить
         model.addAttribute("user", newUser);
         model.addAttribute("allRoles", roleService.getAllRoles());
+
         return "addNewUser";
     }
 
-    @PostMapping("/admin/add")
+   /* @PostMapping("/admin/add")
     public String create(@ModelAttribute("user") User user, @RequestParam(value = "roles", required = false) List<Long> roleIds, Model model) {
 
         if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
@@ -85,9 +82,40 @@ public class AdminController {
         Set<Role> roles = roleIds.stream().map(roleService::getRoleById).collect(Collectors.toSet());
         user.setRoles(roles);
         userService.saveUser(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return "redirect:/admin";
     }
+*/
+   @PostMapping("/admin/add")
+   public String create(@ModelAttribute("user") User user,
+                        @RequestParam(value = "roles", required = false) List<Long> roleIds,
+                        Model model) {
 
+       if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+           model.addAttribute("error", "Пароль обязателен");
+           model.addAttribute("allRoles", roleService.getAllRoles());
+           return "addNewUser";  // Вернуть на страницу добавления
+       }
+
+       if (roleIds == null || roleIds.isEmpty()) {
+           model.addAttribute("error", "Выберите роль");
+           model.addAttribute("allRoles", roleService.getAllRoles());
+           model.addAttribute("user", user);
+           return "addNewUser";  // Вернуть на страницу добавления
+       }
+
+       Set<Role> roles = roleIds.stream()
+               .map(roleService::getRoleById)
+               .collect(Collectors.toSet());
+       user.setRoles(roles);
+
+       // Кодируем пароль перед сохранением
+       user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+       userService.saveUser(user);
+       return "redirect:/admin";
+   }
     @GetMapping("/admin/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
         userService.deleteUser(id);

@@ -1,21 +1,18 @@
-package ru.kata.spring.boot_security.demo.DAO;
+package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.User;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Table;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
-public class UserDao implements UserDaoImp {
+public class UserDaoImp implements UserDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public UserDao(EntityManager entityManager) {this.entityManager = entityManager;}
+    public UserDaoImp(EntityManager entityManager) {this.entityManager = entityManager;}
 
     @Override
     public List<User> getAllUsers() {
@@ -25,7 +22,7 @@ public class UserDao implements UserDaoImp {
 
     @Override
     public void saveUser(User user) {
-        //        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//                user.setPassword(passwordEncoder.encode(user.getPassword()));
         entityManager.persist(user);
     }
 
@@ -42,8 +39,10 @@ public class UserDao implements UserDaoImp {
         existing.setName(user.getName());
         existing.setSurname(user.getSurname());
         existing.setAge(user.getAge());
-
+        existing.setEmail(user.getEmail());  // ДОБАВИТЬ
+        existing.setRoles(user.getRoles());  // ДОБАВИТЬ
         entityManager.merge(existing);
+
     }
 
     @Override
@@ -54,7 +53,15 @@ public class UserDao implements UserDaoImp {
 
     @Override
     public User findByUsername(String username) {
-        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.name = :username", User.class).setParameter("username", username).getSingleResult();
+        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.name = :username",User.class)
+                .setParameter("username", username).getSingleResult();
 
+    }
+
+    @Override
+    public User findByUseEmail(String email) {
+        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.email = :email", User.class)
+                .setParameter("email", email)
+                .getSingleResult();
     }
 }

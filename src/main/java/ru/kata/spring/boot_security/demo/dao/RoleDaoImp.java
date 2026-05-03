@@ -1,12 +1,13 @@
-package ru.kata.spring.boot_security.demo.DAO;
+package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class RoleDaoImp implements RoleDao {
@@ -18,9 +19,9 @@ public class RoleDaoImp implements RoleDao {
 
 
     @Override
-    public List<Role> getAllRoles() {
-        return entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultList();
-
+    public Set<Role> getAllRoles() {
+        List<Role> roles = entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultList();
+        return new LinkedHashSet<>(roles);
     }
 
     @Override

@@ -6,13 +6,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.DAO.RoleDao;
-import ru.kata.spring.boot_security.demo.DAO.UserDao;
+import ru.kata.spring.boot_security.demo.dao.RoleDao;
+import ru.kata.spring.boot_security.demo.dao.UserDaoImp;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,9 +22,9 @@ public class UserServiceImp implements UserService, UserDetailsService {
     private final RoleService roleService;  // добавить
     private final PasswordEncoder passwordEncoder;
     private final RoleDao roleDao;
-    private final UserDao userDao;
+    private final UserDaoImp userDao;
 
-    public UserServiceImp(RoleService roleService, PasswordEncoder passwordEncoder, RoleDao roleDao, UserDao userDao) {
+    public UserServiceImp(RoleService roleService, PasswordEncoder passwordEncoder, RoleDao roleDao, UserDaoImp userDao) {
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
         this.roleDao = roleDao;
@@ -51,10 +49,8 @@ public class UserServiceImp implements UserService, UserDetailsService {
     @Transactional
     @Override
     public void updateUser(User user, List<Long> roleIds) {
-        // Получаем существующего пользователя из БД
         User existingUser = userDao.getUserById(user.getId());
 
-        // Обновляем основные поля
         existingUser.setName(user.getName());
         existingUser.setSurname(user.getSurname());
         existingUser.setAge(user.getAge());
@@ -82,10 +78,17 @@ public class UserServiceImp implements UserService, UserDetailsService {
         User user = getUserById(id);
         userDao.deleteUser(id);
     }
+
     @Transactional(readOnly = true)
     @Override
     public User findByUsername(String username) {
         return userDao.findByUsername(username);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public User findfindByUserEmail(String email) {
+        return userDao.findByUsername(email);
     }
 
     @Override
