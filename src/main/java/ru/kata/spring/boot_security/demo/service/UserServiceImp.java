@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
 
-//    @PersistenceContext
     private final RoleService roleService;  // добавить
     private final PasswordEncoder passwordEncoder;
     private final RoleDao roleDao;
@@ -56,13 +55,9 @@ public class UserServiceImp implements UserService, UserDetailsService {
         existingUser.setAge(user.getAge());
         existingUser.setEmail(user.getEmail());
 
-        // Обновляем пароль ТОЛЬКО если он был введен (не null и не пустой)
         if (user.getPassword() != null && !user.getPassword().trim().isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        // Если пароль не введен - оставляем старый (ничего не делаем)
-
-        // Обновляем роли
         if (roleIds != null && !roleIds.isEmpty()) {
             Set<Role> roles = roleIds.stream()
                     .map(roleService::getRoleById)

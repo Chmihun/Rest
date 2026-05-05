@@ -63,30 +63,6 @@ private final PasswordEncoder passwordEncoder;
         return "addNewUser";
     }
 
-   /* @PostMapping("/admin/add")
-    public String create(@ModelAttribute("user") User user, @RequestParam(value = "roles", required = false) List<Long> roleIds, Model model) {
-
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            model.addAttribute("error", "Пароль обязателен");
-            model.addAttribute("allRoles", roleService.getAllRoles());
-            return "edit";
-        }
-
-        if (roleIds == null || roleIds.isEmpty()) {
-            model.addAttribute("error", "Выберите роль");
-            model.addAttribute("allRoles", roleService.getAllRoles());
-            model.addAttribute("user", user);
-            return "edit";
-        }
-
-        Set<Role> roles = roleIds.stream().map(roleService::getRoleById).collect(Collectors.toSet());
-        user.setRoles(roles);
-        userService.saveUser(user);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        return "redirect:/admin";
-    }
-*/
    @PostMapping("/admin/add")
    public String create(@ModelAttribute("user") User user,
                         @RequestParam(value = "roles", required = false) List<Long> roleIds,
@@ -110,7 +86,6 @@ private final PasswordEncoder passwordEncoder;
                .collect(Collectors.toSet());
        user.setRoles(roles);
 
-       // Кодируем пароль перед сохранением
        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
        userService.saveUser(user);

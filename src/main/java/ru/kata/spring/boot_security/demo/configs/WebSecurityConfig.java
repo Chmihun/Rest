@@ -18,7 +18,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
     private final UserDetailsService userDetailsService;
 
-    // Конструктор для внедрения твоего хендлера и сервиса (UserServiceImp)
     public WebSecurityConfig(SuccessUserHandler successUserHandler,
                              @Lazy UserDetailsService userDetailsService) {
         this.successUserHandler = successUserHandler;
@@ -27,7 +26,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // Говорим Spring использовать наш сервис и шифрование BCrypt
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
@@ -49,7 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    // Бин для шифрования, который нужен и здесь, и в AdminController
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

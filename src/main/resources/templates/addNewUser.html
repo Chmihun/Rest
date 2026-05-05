@@ -10,14 +10,10 @@
             padding: 0;
             background-color: #f4f4f4;
         }
-
-        /* Контейнер с flex для левой панели и контента */
         .container {
             display: flex;
             min-height: 100vh;
         }
-
-        /* Левая панель навигации */
         .sidebar {
             width: 250px;
             background-color: #2c3e50;
@@ -53,8 +49,6 @@
             text-decoration: none;
             display: block;
         }
-
-        /* Основной контент */
         .main-content {
             flex: 1;
             padding: 20px;
@@ -85,8 +79,6 @@
         h2 {
             margin-top: 0;
         }
-
-        /* Группа кнопок */
         .button-group {
             display: inline-flex;
             margin-bottom: 20px;
@@ -94,8 +86,6 @@
             overflow: hidden;
             border: 1px solid #007bff;
         }
-
-        /* Users table - голубой */
         .users-table-btn {
             background-color: transparent;
             color: #007bff;
@@ -107,8 +97,6 @@
             border-right: 1px solid #007bff;
             cursor: pointer;
         }
-
-        /* New User - зеленый */
         .new-user-btn {
             background-color: transparent;
             color: #28a745;
@@ -125,7 +113,6 @@
             text-decoration: none;
         }
 
-        /* Контейнер для формы по центру */
         .form-wrapper {
             display: flex;
             justify-content: center;
@@ -133,7 +120,6 @@
             flex: 1;
         }
 
-        /* Форма добавления пользователя - по центру */
         .form-container {
             background-color: #fff;
             border-radius: 8px;
@@ -167,8 +153,6 @@
             outline: none;
             border-color: #007bff;
         }
-
-        /* Выпадающий список для ролей */
         .form-group select {
             width: 100%;
             padding: 8px 12px;
@@ -183,8 +167,6 @@
             outline: none;
             border-color: #007bff;
         }
-
-        /* Кнопка Add new user */
         .btn-submit {
             background-color: #007bff;
             color: white;
@@ -235,7 +217,6 @@
 <body>
 
 <div class="container">
-    <!-- Левая панель навигации -->
     <div class="sidebar">
         <h3>Menu</h3>
         <ul>
@@ -244,20 +225,17 @@
         </ul>
     </div>
 
-    <!-- Основной контент -->
     <div class="main-content">
         <div class="header">
             <h2>Admin panel</h2>
             <a th:href="@{/logout}" class="logout">Logout</a>
         </div>
 
-        <!-- Группа кнопок -->
         <div class="button-group">
             <a th:href="@{/admin}" class="users-table-btn">Users table</a>
             <a th:href="@{/admin/add}" class="new-user-btn">New User</a>
         </div>
 
-        <!-- Форма по центру -->
         <div class="form-wrapper">
             <div class="form-container">
                 <form th:action="@{/admin/add}" th:object="${user}" method="post">

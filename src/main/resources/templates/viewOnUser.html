@@ -10,14 +10,11 @@
             padding: 0;
             background-color: #f4f4f4;
         }
-
-        /* Контейнер с flex для левой панели и контента */
         .container {
             display: flex;
             min-height: 100vh;
         }
 
-        /* Левая панель навигации */
         .sidebar {
             width: 250px;
             background-color: #2c3e50;
@@ -54,14 +51,12 @@
             display: block;
         }
 
-        /* Основной контент */
         .main-content {
             flex: 1;
             padding: 20px;
             background-color: #f9f9f9;
         }
 
-        /* Стиль для таблицы - данные в одну строку */
         .user-table {
             width: 100%;
             border-collapse: collapse;
@@ -167,18 +162,12 @@
     <!-- Левая панель навигации -->
     <div class="sidebar">
         <h3>User</h3>
-<!--        <ul>-->
-<!--            <li><a th:href="@{/admin}">Admin</a></li>-->
-<!--            <li><a th:href="@{/user}">User</a></li>-->
-<!--        </ul>-->
     </div>
 
-    <!-- Основной контент -->
     <div class="main-content">
 
         <h4>User information-page</h4>
 
-        <!-- Таблица с данными пользователя в одну строку -->
         <table class="user-table">
             <thead>
             <tr>
@@ -192,7 +181,6 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Один пользователь в одной строке -->
             <tr>
                 <td th:text="${user.id}">—</td>
                 <td th:text="${user.name}">—</td>
