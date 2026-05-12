@@ -73,25 +73,20 @@ public class UserServiceImp implements UserService, UserDetailsService {
         User user = getUserById(id);
         userDao.deleteUser(id);
     }
-
     @Transactional(readOnly = true)
     @Override
     public User findByUsername(String username) {
         return userDao.findByUsername(username);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public User findfindByUserEmail(String email) {
-        return userDao.findByUsername(email);
-    }
+
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         try {
-            return findByUsername(name);
+            return findByUsername(email);
         } catch (Exception e) {
-            throw new UsernameNotFoundException("User " + name + " not found");
+            throw new UsernameNotFoundException("User " + email + " not found");
         }
     }
 }

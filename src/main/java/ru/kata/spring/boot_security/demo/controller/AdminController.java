@@ -65,10 +65,11 @@ private final PasswordEncoder passwordEncoder;
 
    @PostMapping("/admin/add")
    public String create(@ModelAttribute("user") User user,
+                        @RequestParam("password") String password,
                         @RequestParam(value = "roles", required = false) List<Long> roleIds,
                         Model model) {
 
-       if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+       if (password == null || password.trim().isEmpty()) {
            model.addAttribute("error", "Пароль обязателен");
            model.addAttribute("allRoles", roleService.getAllRoles());
            return "addNewUser";  // Вернуть на страницу добавления
@@ -85,7 +86,7 @@ private final PasswordEncoder passwordEncoder;
                .map(roleService::getRoleById)
                .collect(Collectors.toSet());
        user.setRoles(roles);
-
+       user.setPassword(password);//
        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
        userService.saveUser(user);
