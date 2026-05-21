@@ -21,7 +21,6 @@
         private String email;
         @Column(name = "age")
         private int age;
-        private String test="проверка комита";
 
         @Column(name = "password")
         private String password;
@@ -30,7 +29,6 @@
         private Set<Role> roles = new HashSet<>();
 
         public User() {
-            System.out.println(test);
         }
 
         public User(String name, String surname, int age, String password, Set<Role> roles, String email) {
