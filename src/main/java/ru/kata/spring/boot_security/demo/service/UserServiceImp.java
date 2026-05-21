@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
+import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.dao.UserDaoImp;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
@@ -21,7 +22,7 @@ public class UserServiceImp implements UserService, UserDetailsService {
     private final RoleService roleService;  // добавить
     private final PasswordEncoder passwordEncoder;
     private final RoleDao roleDao;
-    private final UserDaoImp userDao;
+    private final UserDao userDao;
 
     public UserServiceImp(RoleService roleService, PasswordEncoder passwordEncoder, RoleDao roleDao, UserDaoImp userDao) {
         this.roleService = roleService;
@@ -75,8 +76,8 @@ public class UserServiceImp implements UserService, UserDetailsService {
     }
     @Transactional(readOnly = true)
     @Override
-    public User findByUsername(String username) {
-        return userDao.findByUsername(username);
+    public User findByUsername(String email) {
+        return userDao.findByUsername(email);
     }
 
 

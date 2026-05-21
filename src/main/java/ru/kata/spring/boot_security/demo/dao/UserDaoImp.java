@@ -51,16 +51,17 @@ public class UserDaoImp implements UserDao {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.name = :username",User.class)
-                .setParameter("username", username).getSingleResult();
-
-    }
-
-    @Override
-    public User findByUseEmail(String email) {
+    public User findByUsername(String email) {
         return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.email = :email", User.class)
                 .setParameter("email", email)
                 .getSingleResult();
+
     }
+
+//      @Override
+//    public User findByUseEmail(String email) {
+//        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.email = :email", User.class)
+//                .setParameter("email", email)
+//                .getSingleResult();
+//    }
 }

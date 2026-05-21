@@ -28,8 +28,6 @@ public class UserController {
 
         return "viewOnUser";
     }
-//    @RequestBody
-//    public
 }
 
 

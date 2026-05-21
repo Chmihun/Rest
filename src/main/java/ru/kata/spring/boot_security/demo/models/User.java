@@ -1,5 +1,6 @@
     package ru.kata.spring.boot_security.demo.models;
 
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import org.springframework.security.core.GrantedAuthority;
     import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,6 +21,7 @@
         private String email;
         @Column(name = "age")
         private int age;
+        private String test="проверка комита";
 
         @Column(name = "password")
         private String password;
@@ -27,7 +29,9 @@
         @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
         private Set<Role> roles = new HashSet<>();
 
-        public User() {}
+        public User() {
+            System.out.println(test);
+        }
 
         public User(String name, String surname, int age, String password, Set<Role> roles, String email) {
             this.name = name;
@@ -59,11 +63,13 @@
         public void setEmail(String email) {this.email = email;}
 
         @Override
+        @JsonIgnore
         public Collection<? extends GrantedAuthority> getAuthorities() {
             return roles;
         }
 
         @Override
+        @JsonIgnore
         public String getPassword() {return password;}
 
         public void setPassword(String password) {this.password = password;}
@@ -73,18 +79,25 @@
         public Set<Role> getRoles() {return roles;}
 
         @Override
-        public String getUsername() {return name;}
+//        @JsonIgnore
+        public String getUsername() {
+            return email;}
+//            return name;}
 
         @Override
+        @JsonIgnore
         public boolean isAccountNonExpired() {return true;}
 
         @Override
+        @JsonIgnore
         public boolean isAccountNonLocked() {return true;}
 
         @Override
+        @JsonIgnore
         public boolean isCredentialsNonExpired() {return true;}
 
         @Override
+        @JsonIgnore
         public boolean isEnabled() {return true;}
 
         @Override

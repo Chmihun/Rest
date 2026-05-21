@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -25,25 +26,43 @@ public class MyRestController {
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
+    /*public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
     @GetMapping("/user/{id}")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
+    }*/ public ResponseEntity<?> getAllUsers(Authentication authentication) {
+        // Получаем пользователя напрямую из Authentication
+        User currentUser = (User) authentication.getPrincipal();
+
+        if (currentUser.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_ADMIN"))) {
+            return ResponseEntity.ok(userService.getAllUsers());
+        } else {
+            return ResponseEntity.ok(List.of(currentUser));
+        }
     }
+
     @GetMapping("/roles")
     public List<Role> getAllRoles() {
         return roleService.getAllRoles();
     }
+
     @GetMapping("/role/{id}")
-    public Role getRoleById(@PathVariable Long id){
+    public Role getRoleById(@PathVariable Long id) {
         return roleService.getRoleById(id);
     }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/delete/{id}")
-    public String deleteUserfromId(@PathVariable Long id){
-         userService.deleteUser(id);
-        return "User with id " + id + " was deleted";
+    public String deleteUserfromId(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return "User with id= " + id + " was deleted";
     }
 }
