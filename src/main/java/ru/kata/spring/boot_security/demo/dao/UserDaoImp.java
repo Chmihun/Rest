@@ -27,8 +27,7 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public User getUserById(Long id) {
-        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles" +
-                " WHERE u.id = :id", User.class).setParameter("id", id).getSingleResult();
+        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles" + " WHERE u.id = :id", User.class).setParameter("id", id).getSingleResult();
 
     }
 
@@ -38,8 +37,8 @@ public class UserDaoImp implements UserDao {
         existing.setName(user.getName());
         existing.setSurname(user.getSurname());
         existing.setAge(user.getAge());
-        existing.setEmail(user.getEmail());  // ДОБАВИТЬ
-        existing.setRoles(user.getRoles());  // ДОБАВИТЬ
+        existing.setEmail(user.getEmail());
+        existing.setRoles(user.getRoles());
         entityManager.merge(existing);
 
     }
@@ -52,16 +51,8 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public User findByUsername(String email) {
-        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.email = :email", User.class)
-                .setParameter("email", email)
-                .getSingleResult();
+        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.email = :email", User.class).setParameter("email", email).getSingleResult();
 
     }
 
-//      @Override
-//    public User findByUseEmail(String email) {
-//        return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles WHERE u.email = :email", User.class)
-//                .setParameter("email", email)
-//                .getSingleResult();
-//    }
 }

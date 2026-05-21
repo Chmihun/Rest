@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,15 +25,7 @@ public class MyRestController {
     }
 
     @GetMapping("/users")
-    /*public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
-    @GetMapping("/user/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(user);
-    }*/ public ResponseEntity<?> getAllUsers(Authentication authentication) {
-        // Получаем пользователя напрямую из Authentication
+    public ResponseEntity<?> getAllUsers(Authentication authentication) {
         User currentUser = (User) authentication.getPrincipal();
 
         if (currentUser.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_ADMIN"))) {
@@ -58,6 +49,11 @@ public class MyRestController {
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(user);
+    }
+    @GetMapping("/user")
+    public ResponseEntity<User> getCurrentUser(Authentication authentication) {
+        User currentUser = (User) authentication.getPrincipal();
+        return ResponseEntity.ok(currentUser);
     }
 
     @GetMapping("/delete/{id}")

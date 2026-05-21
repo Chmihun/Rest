@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.dao.UserDaoImp;
 import ru.kata.spring.boot_security.demo.models.Role;
@@ -19,33 +18,35 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImp implements UserService, UserDetailsService {
 
-    private final RoleService roleService;  // добавить
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final RoleDao roleDao;
     private final UserDao userDao;
 
-    public UserServiceImp(RoleService roleService, PasswordEncoder passwordEncoder, RoleDao roleDao, UserDaoImp userDao) {
+    public UserServiceImp(RoleService roleService, PasswordEncoder passwordEncoder, UserDaoImp userDao) {
         this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
-        this.roleDao = roleDao;
         this.userDao = userDao;
     }
+
     @Transactional(readOnly = true)
     @Override
     public List<User> getAllUsers() {
         return userDao.getAllUsers();
     }
+
     @Transactional
     @Override
     public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.saveUser(user);
     }
+
     @Transactional(readOnly = true)
     @Override
     public User getUserById(Long id) {
         return userDao.getUserById(id);
     }
+
     @Transactional
     @Override
     public void updateUser(User user, List<Long> roleIds) {
@@ -60,26 +61,24 @@ public class UserServiceImp implements UserService, UserDetailsService {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         if (roleIds != null && !roleIds.isEmpty()) {
-            Set<Role> roles = roleIds.stream()
-                    .map(roleService::getRoleById)
-                    .collect(Collectors.toSet());
+            Set<Role> roles = roleIds.stream().map(roleService::getRoleById).collect(Collectors.toSet());
             existingUser.setRoles(roles);
         }
 
         userDao.updateUser(existingUser);
     }
+
     @Transactional
     @Override
     public void deleteUser(Long id) {
-        User user = getUserById(id);
         userDao.deleteUser(id);
     }
+
     @Transactional(readOnly = true)
     @Override
     public User findByUsername(String email) {
         return userDao.findByUsername(email);
     }
-
 
 
     @Override

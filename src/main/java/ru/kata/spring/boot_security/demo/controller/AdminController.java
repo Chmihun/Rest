@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
+
     private final UserService userService;
     private final RoleService roleService;
 
@@ -45,9 +46,10 @@ public class AdminController {
         model.addAttribute("allRoles", roleService.getAllRoles()); // ДОБАВИТЬ
         return "edit";
     }
+
     @GetMapping(value = "/admin/user/{id}")
-    public String user(@PathVariable("id") Long id, Model model){
-        User user=userService.getUserById(id);
+    public String user(@PathVariable("id") Long id, Model model) {
+        User user = userService.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("allRoles", roleService.getAllRoles());
 
@@ -60,11 +62,13 @@ public class AdminController {
         userService.updateUser(user, roleIds);
         return "redirect:/admin";
     }
+
     @GetMapping("/admin/delete/{id}")
     public String delete(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
+
     @GetMapping("/admin/add")
     public String addNewUser(Model model) {
         User newUser = new User();

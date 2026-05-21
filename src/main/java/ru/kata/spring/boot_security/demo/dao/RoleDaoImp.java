@@ -24,18 +24,4 @@ public class RoleDaoImp implements RoleDao {
         return new LinkedHashSet<>(roles);
     }
 
-    @Override
-    public Role getRoleById(Long id) {
-        return entityManager.find(Role.class, id);
-    }
-
-
-    @Override
-    public Role findByName(String name) {
-        try {
-            return entityManager.createQuery("SELECT r FROM Role r WHERE r.name = :name", Role.class).setParameter("name", name).getSingleResult();
-        } catch (Exception e) {
-            return null;
-        }
-    }
 }

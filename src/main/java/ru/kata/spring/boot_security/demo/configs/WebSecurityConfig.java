@@ -33,13 +33,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/admin/**").hasRole("ADMIN") // Админка только для админа
-                .antMatchers("/user").hasAnyRole("USER", "ADMIN") // Личная страница для обоих
-                .antMatchers("/", "/login","/api/register").permitAll() // Главная доступна всем
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/", "/login","/api/register").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .successHandler(successUserHandler) // Редирект в зависимости от роли
+                .successHandler(successUserHandler)
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .permitAll()
